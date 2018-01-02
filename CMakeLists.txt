@@ -68,6 +68,7 @@ add_executable(${MCSEMA_LIFT}
     mcsema/BC/Optimize.cpp
     mcsema/BC/Segment.cpp
     mcsema/BC/Util.cpp
+	mcsema/BC/DeadStoreEliminator.cpp
 
     tools/mcsema_lift/Lift.cpp
 )

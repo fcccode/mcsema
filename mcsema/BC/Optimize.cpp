@@ -53,6 +53,7 @@
 #include "mcsema/Arch/Arch.h"
 #include "mcsema/BC/Optimize.h"
 #include "mcsema/BC/Util.h"
+#include "mcsema/BC/DeadStoreEliminator.h"
 
 DEFINE_bool(disable_optimizer, false,
             "Disable interprocedural optimizations?");
@@ -136,6 +137,12 @@ static void RunO3(void) {
 
   builder.populateFunctionPassManager(func_manager);
   builder.populateModulePassManager(module_manager);
+
+  // begin adding custom passes
+  DeadStoreEliminationPass *dse = new DeadStoreEliminationPass();
+  func_manager.add(dse);
+  // run
+
   func_manager.doInitialization();
   for (auto &func : *gModule) {
     func_manager.run(func);
