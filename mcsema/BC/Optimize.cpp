@@ -140,7 +140,8 @@ static void RunO3(void) {
 
   // begin adding custom passes
   // Figure out how to properly get original arch here...
-  DeadStoreEliminationPass *dse = new DeadStoreEliminationPass("unk");
+  DeadStoreEliminationPass *dse = new DeadStoreEliminationPass("x86");
+  // XXX: change to actual arch-spec here.
   func_manager.add(dse);
   // run
 

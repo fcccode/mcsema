@@ -33,8 +33,10 @@ bool DeadStoreEliminationPass::runOnBasicBlock(BasicBlock &bb) {
       // for ops that may reference this?
       Value *vb = gep->getPointerOperand();
       if (Argument *glob = dyn_cast<Argument>(vb)) {
-        errs() << "FOUND Arg: " << *glob << "\n";
+        errs() << "Found Arg: " << *glob << "\n";
         // ensure here that this referes to the State structure
+        // glob->getName() and glob->getValueName() don't return
+        // what I want. 
         _attemptDeadLoadRemoval(gep);
         _attemptDeadStoreRemoval(gep);
       }
@@ -58,9 +60,17 @@ bool DeadStoreEliminationPass::runOnBasicBlock(BasicBlock &bb) {
 }
 
 void DeadStoreEliminationPass::_attemptDeadLoadRemoval(GetElementPtrInst *gep) {
-  __attribute__((unused)) Register *efreg = rMap->registerAtOffset(0);
+  // gep->setIsInBounds(true) perhaps 
+  
+  // get->getResultElementType() to get the size of the access
+  // seems like its the last element of gep->indices().begin()
+  // for the index
+  __attribute__((unused)) Register *efreg = rMap->registerAtOffset(0, 0);
+  __attribute__((unused)) vector<Register *> useStack;
 
-
+  for (auto iter = gep->use_begin(); iter != gep->use_end(); iter++) {
+    errs() << *iter << "\n";
+  }
 }
 
 void DeadStoreEliminationPass::_attemptDeadStoreRemoval(GetElementPtrInst *gep) {

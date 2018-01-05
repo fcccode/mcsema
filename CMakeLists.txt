@@ -60,15 +60,16 @@ add_executable(${MCSEMA_LIFT}
     mcsema/CFG/CFG.cpp
 
     mcsema/BC/Callback.cpp
+    mcsema/BC/DeadStoreEliminator.cpp
     mcsema/BC/External.cpp
     mcsema/BC/Function.cpp
     mcsema/BC/Instruction.cpp
     mcsema/BC/Legacy.cpp
     mcsema/BC/Lift.cpp
     mcsema/BC/Optimize.cpp
+    mcsema/BC/RegisterMap.cpp
     mcsema/BC/Segment.cpp
     mcsema/BC/Util.cpp
-	mcsema/BC/DeadStoreEliminator.cpp
 
     tools/mcsema_lift/Lift.cpp
 )
