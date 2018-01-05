@@ -11,27 +11,26 @@
 #include "mcsema/CFG/CFG.h"
 #include "mcsema/BC/RegisterMap.h"
 
-using namespace llvm;
-
 namespace mcsema {
 
-class DeadCodeEliminationPass : public ModulePass {
+class DeadCodeEliminationPass : public llvm::ModulePass {
   RegisterMap *rMap;
   static char ID;
 
   // use the gep to get def-use chain
-  void _attemptDeadLoadRemoval(GetElementPtrInst *gep);
-  void _attemptDeadCodeRemoval(GetElementPtrInst *gep);
+  void _attemptDeadLoadRemoval(llvm::GetElementPtrInst *gep);
+  void _attemptDeadCodeRemoval(llvm::GetElementPtrInst *gep);
 
   public:
   ~DeadCodeEliminationPass();
-  DeadCodeEliminationPass() : ModulePass(ID) {
-    rMap = RegisterMap::registerMapForTarget("x86");
+  DeadCodeEliminationPass(llvm::Module &mod) : llvm::ModulePass(ID) {
+    llvm::StructType *state = mod.getTypeByName("struct.State");
+    rMap = RegisterMap::registerMapForStateStructure(state);
     assert(rMap != NULL && "rMap is null");
   }
 
-  virtual bool runOnModule(Module &mod);
-  virtual bool runOnBasicBlock(BasicBlock &bb);
+  virtual bool runOnModule(llvm::Module &mod);
+  virtual bool runOnBasicBlock(llvm::BasicBlock &bb);
 };
 
 }

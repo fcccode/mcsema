@@ -140,7 +140,7 @@ static void RunO3(void) {
 
   // begin adding custom passes
   // Figure out how to properly get original arch here...
-  DeadCodeEliminationPass dse;
+  DeadCodeEliminationPass dse(*gModule);
   // XXX: change to actual arch-spec here.
   dse.runOnModule(*gModule);
   // run

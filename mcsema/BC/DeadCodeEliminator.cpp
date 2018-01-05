@@ -7,8 +7,10 @@
 #include <list>
 #include <vector>
 
-#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/Function.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Module.h>
 #include <llvm/Support/raw_ostream.h>
 
 #include "mcsema/BC/DeadCodeEliminator.h" 
@@ -21,24 +23,24 @@ DeadCodeEliminationPass::~DeadCodeEliminationPass() {
   delete rMap;
 }
 
-bool DeadCodeEliminationPass::runOnModule(Module &mod) {
-    return false;
+bool DeadCodeEliminationPass::runOnModule(llvm::Module &mod) {
+  return false;
 }
 
-bool DeadCodeEliminationPass::runOnBasicBlock(BasicBlock &bb) {
+bool DeadCodeEliminationPass::runOnBasicBlock(llvm::BasicBlock &bb) {
   LOG(INFO) << "[Begin Dead Store Elim on BB]\n";
 
   for (auto iter = bb.begin(); iter != bb.end(); iter++) {
-    Instruction *inst = &*iter;
+    llvm::Instruction *inst = &*iter;
     
     // get all operations that are pointers
     // if they reference state structure
     // let's determine the register
-    if (GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(inst)) {
+    if (llvm::GetElementPtrInst *gep = llvm::dyn_cast<llvm::GetElementPtrInst>(inst)) {
       // should maybe also check regular instructions
       // for ops that may reference this?
-      Value *vb = gep->getPointerOperand();
-      if (Argument *glob = dyn_cast<Argument>(vb)) {
+      llvm::Value *vb = gep->getPointerOperand();
+      if (llvm::Argument *glob = llvm::dyn_cast<llvm::Argument>(vb)) {
         LOG(INFO) << "Found Arg: " << "\n";
         // ensure here that this referes to the State structure
         // glob->getName() and glob->getValueName() don't return
@@ -64,7 +66,7 @@ bool DeadCodeEliminationPass::runOnBasicBlock(BasicBlock &bb) {
   return false;
 }
 
-void DeadCodeEliminationPass::_attemptDeadLoadRemoval(GetElementPtrInst *gep) {
+void DeadCodeEliminationPass::_attemptDeadLoadRemoval(llvm::GetElementPtrInst *gep) {
   // gep->setIsInBounds(true) perhaps 
   
   // get->getResultElementType() to get the size of the access
@@ -78,7 +80,7 @@ void DeadCodeEliminationPass::_attemptDeadLoadRemoval(GetElementPtrInst *gep) {
   }
 }
 
-void DeadCodeEliminationPass::_attemptDeadCodeRemoval(GetElementPtrInst *gep) {
+void DeadCodeEliminationPass::_attemptDeadCodeRemoval(llvm::GetElementPtrInst *gep) {
 
 }
 

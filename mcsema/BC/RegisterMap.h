@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <llvm/IR/DerivedTypes.h>
+
 namespace mcsema {
 
 // what is the scope for this class?
@@ -30,7 +32,7 @@ class RegisterMap {
 
   public:
   Register *registerAtOffset(off_t offset, size_t size);
-  static RegisterMap *registerMapForTarget(std::string target);
+  static RegisterMap *registerMapForStateStructure(llvm::StructType *target);
 };
 
 }
