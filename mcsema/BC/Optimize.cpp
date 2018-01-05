@@ -51,9 +51,9 @@
 #include "remill/BC/Util.h"
 
 #include "mcsema/Arch/Arch.h"
+#include "mcsema/BC/DeadCodeEliminator.h"
 #include "mcsema/BC/Optimize.h"
 #include "mcsema/BC/Util.h"
-#include "mcsema/BC/DeadStoreEliminator.h"
 
 DEFINE_bool(disable_optimizer, false,
             "Disable interprocedural optimizations?");
@@ -140,9 +140,9 @@ static void RunO3(void) {
 
   // begin adding custom passes
   // Figure out how to properly get original arch here...
-  DeadStoreEliminationPass *dse = new DeadStoreEliminationPass("x86");
+  DeadCodeEliminationPass dse;
   // XXX: change to actual arch-spec here.
-  func_manager.add(dse);
+  dse.runOnModule(*gModule);
   // run
 
   func_manager.doInitialization();

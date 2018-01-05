@@ -3,15 +3,13 @@
 
 #include <string>
 
-using namespace std;
-
 namespace mcsema {
 
 // what is the scope for this class?
 struct Register {
-  string name;
+  std::string name;
   size_t size;
-  Register(string name_, size_t size_) : name(name_), size(size_) { }
+  Register(std::string name_, size_t size_) : name(name_), size(size_) { }
 };
   
 // TODO: Ask Peter his thoughts on this design
@@ -20,9 +18,9 @@ struct Register {
 class RegisterMap {
 
   struct RegisterGroup {
-    string name;
-    vector<Register *> members;
-    RegisterGroup(string name_) : name(name_) {}
+    std::string name;
+    std::vector<Register *> members;
+    RegisterGroup(std::string name_) : name(name_) {}
     void addRegister(Register *r) { members.push_back(r); }
   };
 
@@ -32,7 +30,7 @@ class RegisterMap {
 
   public:
   Register *registerAtOffset(off_t offset, size_t size);
-  static RegisterMap *registerMapForTarget(string target);
+  static RegisterMap *registerMapForTarget(std::string target);
 };
 
 }

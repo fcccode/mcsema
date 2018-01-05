@@ -3,8 +3,6 @@
 
 #include "mcsema/BC/RegisterMap.h"
 
-using namespace std;
-
 namespace mcsema {
 
 void RegisterMap::addGroup(RegisterGroup *g) {

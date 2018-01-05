@@ -60,7 +60,7 @@ add_executable(${MCSEMA_LIFT}
     mcsema/CFG/CFG.cpp
 
     mcsema/BC/Callback.cpp
-    mcsema/BC/DeadStoreEliminator.cpp
+    mcsema/BC/DeadCodeEliminator.cpp
     mcsema/BC/External.cpp
     mcsema/BC/Function.cpp
     mcsema/BC/Instruction.cpp
