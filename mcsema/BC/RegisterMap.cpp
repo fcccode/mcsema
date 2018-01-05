@@ -28,7 +28,7 @@ RegisterMap *RegisterMap::registerMapForTarget(std::string target) {
   // TODO: Add other archs... and cpu feature combinations
   
   if (target == "x86") {
-    // XXX: Should `ax`, `al`, et ak be their own indep. registers?
+    // XXX: Should `ax`, `al`, et al be their own indep. registers?
     RegisterGroup *gpr = new RegisterGroup("GPR");
     // general purpose registers
     gpr->addRegister(new Register("eax", 4));
