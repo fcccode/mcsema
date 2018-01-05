@@ -139,7 +139,8 @@ static void RunO3(void) {
   builder.populateModulePassManager(module_manager);
 
   // begin adding custom passes
-  DeadStoreEliminationPass *dse = new DeadStoreEliminationPass();
+  // Figure out how to properly get original arch here...
+  DeadStoreEliminationPass *dse = new DeadStoreEliminationPass("unk");
   func_manager.add(dse);
   // run
 
