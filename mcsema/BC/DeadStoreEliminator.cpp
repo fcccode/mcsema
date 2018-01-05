@@ -58,6 +58,8 @@ bool DeadStoreEliminationPass::runOnBasicBlock(BasicBlock &bb) {
 }
 
 void DeadStoreEliminationPass::_attemptDeadLoadRemoval(GetElementPtrInst *gep) {
+  __attribute__((unused)) Register *efreg = rMap->registerAtOffset(0);
+
 
 }
 
