@@ -16,21 +16,21 @@ using namespace llvm;
 namespace mcsema {
 
 class DeadStoreEliminationPass : public BasicBlockPass {
-	RegisterMap *rMap;
-	static char ID;
+  RegisterMap *rMap;
+  static char ID;
 
-	// use the gep to get def-use chain
-	void _attemptDeadLoadRemoval(GetElementPtrInst *gep);
-	void _attemptDeadStoreRemoval(GetElementPtrInst *gep);
+  // use the gep to get def-use chain
+  void _attemptDeadLoadRemoval(GetElementPtrInst *gep);
+  void _attemptDeadStoreRemoval(GetElementPtrInst *gep);
 
-	public:
-	~DeadStoreEliminationPass();
-	DeadStoreEliminationPass(std::string target) : BasicBlockPass(ID) {
-		rMap = RegisterMap::registerMapForTarget(target);
-		assert(rMap != NULL && "rMap is null");
-	}
+  public:
+  ~DeadStoreEliminationPass();
+  DeadStoreEliminationPass(std::string target) : BasicBlockPass(ID) {
+    rMap = RegisterMap::registerMapForTarget(target);
+    assert(rMap != NULL && "rMap is null");
+  }
 
-	virtual bool runOnBasicBlock(BasicBlock &bb);
+  virtual bool runOnBasicBlock(BasicBlock &bb);
 };
 
 }
