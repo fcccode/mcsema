@@ -28,7 +28,7 @@ class RegisterMap {
 
   // makes sense to flatten the group here
   // also makes sense to make this one large template
-  void addGroup(RegisterGroup *g);
+  void _recursivelyAddStructMembers(llvm::StructType *type);
 
   public:
   Register *registerAtOffset(off_t offset, size_t size);
