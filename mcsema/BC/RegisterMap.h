@@ -43,17 +43,17 @@ class RegisterMap {
 
 			RegisterGroup *gpr = new RegisterGroup("GPR");
 			
-			st.addRegister(new Register("eax", 4));
-			st.addRegister(new Register("ebx", 4));
-			st.addRegister(new Register("ecx", 4));
-			st.addRegister(new Register("edx", 4));
-			st.addRegister(new Register("esi", 4));
-			st.addRegister(new Register("edi", 4));
-			st.addRegister(new Register("esp", 4));
-			st.addRegister(new Register("ebp", 4));
-			st.addRegister(new Register("eip", 4));
+			gpr->addRegister(new Register("eax", 4));
+			gpr->addRegister(new Register("ebx", 4));
+			gpr->addRegister(new Register("ecx", 4));
+			gpr->addRegister(new Register("edx", 4));
+			gpr->addRegister(new Register("esi", 4));
+			gpr->addRegister(new Register("edi", 4));
+			gpr->addRegister(new Register("esp", 4));
+			gpr->addRegister(new Register("ebp", 4));
+			gpr->addRegister(new Register("eip", 4));
 
-			addGroup(st);
+			map->addGroup(gpr);
 		}
 		else if (target == "x86_64") {
 

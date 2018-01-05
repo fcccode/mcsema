@@ -19,7 +19,18 @@ bool DeadStoreEliminationPass::runOnBasicBlock(BasicBlock &bb) {
 	errs() << "[Begin Dead Store Elim on BB]\n";
 
 	for (auto iter = bb.begin(); iter != bb.end(); iter++) {
-		errs() << *iter << "\n";
+		Instruction *inst = &*iter;
+		
+		// get all operations that are pointers
+		// if they reference state structure
+		// let's determine the register
+		for (unsigned int i = 0; i < inst->getNumOperands(); i++) {
+			Value *vp = inst->getOperand(i);
+			if (vp->getType()->isPointerTy()) {
+				errs() << *inst << "\n";
+				break;
+			}
+		}
 	}
 
 	errs() << "[End Dead Store Elim on BB]\n";
