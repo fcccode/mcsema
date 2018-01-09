@@ -25,7 +25,7 @@ class DeadCodeEliminationPass : public llvm::ModulePass {
   ~DeadCodeEliminationPass();
   DeadCodeEliminationPass(llvm::Module &mod) : llvm::ModulePass(ID) {
     llvm::StructType *state = mod.getTypeByName("struct.State");
-    rMap = RegisterMap::registerMapForStateStructure(state);
+    rMap = RegisterMap::registerMapForStateStructure(state, mod.getDataLayout());
     assert(rMap != NULL && "rMap is null");
   }
 
