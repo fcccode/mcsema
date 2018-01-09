@@ -9,30 +9,29 @@
 #include <assert.h>
 
 #include "mcsema/CFG/CFG.h"
-#include "mcsema/BC/RegisterMap.h"
+#include "mcsema/BC/RegisterFile.h"
 
 namespace mcsema {
 
 class DeadCodeEliminationPass : public llvm::ModulePass {
-  RegisterMap *rMap;
+  RegisterFile *rMap;
   static char ID;
 
+  void AnalyzeBasicBlock(llvm::BasicBlock &bb);
   // use the gep to get def-use chain
-  void _attemptDeadLoadRemoval(llvm::GetElementPtrInst *gep);
-  void _attemptDeadCodeRemoval(llvm::GetElementPtrInst *gep);
+  void AttemptDeadLoadRemoval(llvm::GetElementPtrInst *gep);
+  void AttemptDeadStoreRemoval(llvm::GetElementPtrInst *gep);
 
   public:
   ~DeadCodeEliminationPass();
   DeadCodeEliminationPass(llvm::Module &mod) : llvm::ModulePass(ID) {
     llvm::StructType *state = mod.getTypeByName("struct.State");
-    rMap = new RegisterMap(state, mod.getDataLayout());
-    assert(rMap != NULL && "rMap is null");
+    rMap = new RegisterFile(state, mod.getDataLayout());
   }
 
   virtual bool runOnModule(llvm::Module &mod);
-  virtual bool runOnBasicBlock(llvm::BasicBlock &bb);
 };
 
-}
+} // namespace mcsema
 
 #endif // MCSEMA_BC_DSE_H_

@@ -1,5 +1,8 @@
-// RegisterMap, handles reflection on State structure
+// RegisterFile, handles reflection on State structure
 // to access registers based on offsets, get names, etc
+
+#ifndef MCSEMA_BC_REGMAP_H
+#define MCSEMA_BC_REGMAP_H
 
 #include <string>
 
@@ -18,7 +21,7 @@ struct Register {
 // TODO: Ask Peter his thoughts on this design
 // depending on how efficient we want this to be
 // we'll have to make some changes
-class RegisterMap {
+class RegisterFile {
 
   struct RegisterGroup {
     std::string name;
@@ -30,14 +33,15 @@ class RegisterMap {
   std::vector<std::shared_ptr<Register>> idx_to_reg;
   const llvm::DataLayout &_layout;
 
-  // makes sense to flatten the group here
-  // also makes sense to make this one large template
   void _recursivelyAddStructMembers(llvm::Type *type);
   void _addMember(size_t size, llvm::Type *typehint);
 
   public:
   std::shared_ptr<Register> registerAtOffset(unsigned long offset, size_t size);
-  RegisterMap(llvm::StructType *state_struc, const llvm::DataLayout &layout);
+  RegisterFile(llvm::StructType *state_struc, const llvm::DataLayout &layout);
 };
 
 }
+
+#endif // MCSEMA_BC_REGMAP_H
+

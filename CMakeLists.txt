@@ -67,7 +67,7 @@ add_executable(${MCSEMA_LIFT}
     mcsema/BC/Legacy.cpp
     mcsema/BC/Lift.cpp
     mcsema/BC/Optimize.cpp
-    mcsema/BC/RegisterMap.cpp
+    mcsema/BC/RegisterFile.cpp
     mcsema/BC/Segment.cpp
     mcsema/BC/Util.cpp
 

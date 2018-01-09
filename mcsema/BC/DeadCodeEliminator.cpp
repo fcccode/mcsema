@@ -24,10 +24,15 @@ DeadCodeEliminationPass::~DeadCodeEliminationPass() {
 }
 
 bool DeadCodeEliminationPass::runOnModule(llvm::Module &mod) {
+  for (auto funcIter = mod.begin(); funcIter != mod.end(); funcIter++) {
+    for (auto bbIter = funcIter->begin(); bbIter != funcIter->end(); bbIter++) {
+      AnalyzeBasicBlock(*bbIter);
+    }
+  }
   return false;
 }
 
-bool DeadCodeEliminationPass::runOnBasicBlock(llvm::BasicBlock &bb) {
+void DeadCodeEliminationPass::AnalyzeBasicBlock(llvm::BasicBlock &bb) {
   LOG(INFO) << "[Begin Dead Store Elim on BB]\n";
 
   for (auto iter = bb.begin(); iter != bb.end(); iter++) {
@@ -45,8 +50,8 @@ bool DeadCodeEliminationPass::runOnBasicBlock(llvm::BasicBlock &bb) {
         // ensure here that this referes to the State structure
         // glob->getName() and glob->getValueName() don't return
         // what I want. 
-        _attemptDeadLoadRemoval(gep);
-        _attemptDeadCodeRemoval(gep);
+        AttemptDeadLoadRemoval(gep);
+        AttemptDeadStoreRemoval(gep);
       }
     }
 
@@ -62,11 +67,9 @@ bool DeadCodeEliminationPass::runOnBasicBlock(llvm::BasicBlock &bb) {
   }
 
   LOG(INFO) << "[End Dead Store Elim on BB]\n";
-
-  return false;
 }
 
-void DeadCodeEliminationPass::_attemptDeadLoadRemoval(llvm::GetElementPtrInst *gep) {
+void DeadCodeEliminationPass::AttemptDeadLoadRemoval(llvm::GetElementPtrInst *gep) {
   // gep->setIsInBounds(true) perhaps 
   
   // get->getResultElementType() to get the size of the access
@@ -80,7 +83,7 @@ void DeadCodeEliminationPass::_attemptDeadLoadRemoval(llvm::GetElementPtrInst *g
   }
 }
 
-void DeadCodeEliminationPass::_attemptDeadCodeRemoval(llvm::GetElementPtrInst *gep) {
+void DeadCodeEliminationPass::AttemptDeadStoreRemoval(llvm::GetElementPtrInst *gep) {
 
 }
 
