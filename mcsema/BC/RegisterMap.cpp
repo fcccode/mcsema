@@ -47,10 +47,8 @@ std::shared_ptr<Register> RegisterMap::registerAtOffset(unsigned long offset, si
   return idx_to_reg[offset];
 }
 
-RegisterMap *RegisterMap::registerMapForStateStructure(llvm::StructType *target, const llvm::DataLayout &layout) {
-  RegisterMap *rmap = new RegisterMap(layout);
-  rmap->_recursivelyAddStructMembers(target);
-  return rmap;
+RegisterMap::RegisterMap(llvm::StructType *target, const llvm::DataLayout &layout) : _layout(layout) {
+  _recursivelyAddStructMembers(target);
 }
 
 } // namespace mcsema

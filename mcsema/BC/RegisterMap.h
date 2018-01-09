@@ -35,11 +35,9 @@ class RegisterMap {
   void _recursivelyAddStructMembers(llvm::Type *type);
   void _addMember(size_t size, llvm::Type *typehint);
 
-  RegisterMap(const llvm::DataLayout &layout) : _layout(layout) { }
-
   public:
   std::shared_ptr<Register> registerAtOffset(unsigned long offset, size_t size);
-  static RegisterMap *registerMapForStateStructure(llvm::StructType *target, const llvm::DataLayout &layout);
+  RegisterMap(llvm::StructType *state_struc, const llvm::DataLayout &layout);
 };
 
 }

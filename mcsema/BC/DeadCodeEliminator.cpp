@@ -73,7 +73,7 @@ void DeadCodeEliminationPass::_attemptDeadLoadRemoval(llvm::GetElementPtrInst *g
   // seems like its the last element of gep->indices().begin()
   // for the index
   __attribute__((unused)) std::shared_ptr<Register> efreg = rMap->registerAtOffset(0, 0);
-  __attribute__((unused)) std::vector<Register *> useStack;
+  __attribute__((unused)) std::vector<std::shared_ptr<Register>> useStack;
 
   for (auto iter = gep->use_begin(); iter != gep->use_end(); iter++) {
     LOG(INFO) << *iter << "\n";
