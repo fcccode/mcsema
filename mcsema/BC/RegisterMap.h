@@ -11,7 +11,7 @@ namespace mcsema {
 struct Register {
   std::string name;
   size_t size;
-  Register(std::string name_, size_t size_) : name(name_), size(size_) { }
+  Register(size_t size_, llvm::Type *typehint) : size(size_) { }
 };
   
 // TODO: Ask Peter his thoughts on this design
@@ -26,9 +26,12 @@ class RegisterMap {
     void addRegister(Register *r) { members.push_back(r); }
   };
 
+  std::vector<Register *> _registers;
+
   // makes sense to flatten the group here
   // also makes sense to make this one large template
-  void _recursivelyAddStructMembers(llvm::StructType *type);
+  void _recursivelyAddStructMembers(llvm::Type *type);
+  void _addMember(size_t size, llvm::Type *typehint);
 
   public:
   Register *registerAtOffset(off_t offset, size_t size);
