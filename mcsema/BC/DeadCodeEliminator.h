@@ -16,15 +16,17 @@ namespace mcsema {
 class DeadCodeEliminationPass : public llvm::ModulePass {
   RegisterFile *rMap;
   static char ID;
+  const llvm::Module &mod;
 
   void AnalyzeBasicBlock(llvm::BasicBlock &bb);
   // use the gep to get def-use chain
   void AttemptDeadLoadRemoval(llvm::GetElementPtrInst *gep);
   void AttemptDeadStoreRemoval(llvm::GetElementPtrInst *gep);
+  bool OpRefersToStateStructure(llvm::Value *val);
 
   public:
   ~DeadCodeEliminationPass();
-  DeadCodeEliminationPass(llvm::Module &mod) : llvm::ModulePass(ID) {
+  DeadCodeEliminationPass(llvm::Module &_mod) : llvm::ModulePass(ID), mod(_mod) {
     llvm::StructType *state = mod.getTypeByName("struct.State");
     rMap = new RegisterFile(state, mod.getDataLayout());
   }

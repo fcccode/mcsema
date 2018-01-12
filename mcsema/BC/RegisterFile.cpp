@@ -16,28 +16,31 @@ void RegisterFile::_addMember(size_t size, llvm::Type *type) {
   for (unsigned int i = 0; i < _layout.getTypeAllocSize(type); i++) {
     idx_to_reg.push_back(reg);
   }
-  // This design may have issues in the future
-  // You do get to know which register is affected, 
-  // but you have no indication of which byte was modified
-  // since they're all identical in every way
-  // I suppose I can keep track of which byte is modified 
-  // As I'm walking the instructions...
 }
  
 void RegisterFile::_recursivelyAddStructMembers(llvm::Type *tp) {
-  //LOG(INFO) << *tp << "\n";
+
   if (llvm::StructType *nstruc = llvm::dyn_cast<llvm::StructType>(tp)) {
     for (unsigned int i = 0; i < nstruc->getNumElements(); i++) {
       llvm::Type *ntyp = nstruc->getElementType(i);
       _recursivelyAddStructMembers(ntyp);
     }
   }
+
   else if (llvm::CompositeType *comp = llvm::dyn_cast<llvm::CompositeType>(tp)) {
     LOG(INFO) << "Composite type: " << comp << "\n";
-    // handle this case, these are mostly arrays
+
+    if (llvm::ArrayType *array = llvm::dyn_cast<llvm::ArrayType>(comp)) {
+      uint64_t count = array->getNumElements();
+      llvm::Type *elementType = array->getElementType();
+      for (uint64_t i = 0; i < count; i++) {
+        _recursivelyAddStructMembers(elementType);
+      }
+    }
   }
+
   else {
-    LOG(INFO) << "Size is: " << tp->getPrimitiveSizeInBits() << "\n";
+    // primitive type
     _addMember(tp->getPrimitiveSizeInBits(), tp);
   }
 }

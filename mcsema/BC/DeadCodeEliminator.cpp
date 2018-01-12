@@ -32,6 +32,17 @@ bool DeadCodeEliminationPass::runOnModule(llvm::Module &mod) {
   return false;
 }
 
+bool DeadCodeEliminationPass::OpRefersToStateStructure(llvm::Value *val) {
+  llvm::StructType *state = mod.getTypeByName("struct.State");
+  if (val->getType()->getTypeID() == state->getTypeID()) {
+    llvm::errs() << "found state\n";
+  }
+  else {
+    // walk def-use
+  }
+  return false;
+}
+
 void DeadCodeEliminationPass::AnalyzeBasicBlock(llvm::BasicBlock &bb) {
   LOG(INFO) << "[Begin Dead Store Elim on BB]\n";
 
@@ -42,28 +53,12 @@ void DeadCodeEliminationPass::AnalyzeBasicBlock(llvm::BasicBlock &bb) {
     // if they reference state structure
     // let's determine the register
     if (llvm::GetElementPtrInst *gep = llvm::dyn_cast<llvm::GetElementPtrInst>(inst)) {
-      // should maybe also check regular instructions
-      // for ops that may reference this?
-      llvm::Value *vb = gep->getPointerOperand();
-      if (llvm::Argument *glob = llvm::dyn_cast<llvm::Argument>(vb)) {
-        LOG(INFO) << "Found Arg: " << "\n";
-        // ensure here that this referes to the State structure
-        // glob->getName() and glob->getValueName() don't return
-        // what I want. 
+      auto operand = gep->getPointerOperand();
+      if (OpRefersToStateStructure(operand)) {
         AttemptDeadLoadRemoval(gep);
         AttemptDeadStoreRemoval(gep);
       }
     }
-
-    //for (unsigned int i = 0; i < inst->getNumOperands(); i++) {
-    //  Value *vp = inst->getOperand(i);
-    //  if (vp->getType()->isPointerTy()) {
-    //    // check if references state structure
-    //    // if so, let's move forward 
-    //    //errs() << "[" << vp->getName() << "]\n";
-    //    break;
-    //  }
-    //}
   }
 
   LOG(INFO) << "[End Dead Store Elim on BB]\n";
