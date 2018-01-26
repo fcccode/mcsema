@@ -12,15 +12,13 @@
 namespace mcsema {
 
 // what is the scope for this class?
+// may want a unique-id in this too
 struct Register {
   std::string name;
   size_t size;
   Register(size_t size_, llvm::Type *typehint) : size(size_) { }
 };
   
-// TODO: Ask Peter his thoughts on this design
-// depending on how efficient we want this to be
-// we'll have to make some changes
 class RegisterFile {
 
   std::vector<std::shared_ptr<Register>> idx_to_reg;

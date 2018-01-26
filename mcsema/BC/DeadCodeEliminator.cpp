@@ -44,7 +44,7 @@ std::shared_ptr<Register> DeadCodeEliminationPass::GetAccessedRegister(llvm::Ins
 }
 
 RegisterAccess DeadCodeEliminationPass::GetInstructionAccessType(llvm::Instruction &inst) {
-  return RegisterAccessTypeRead;;
+  return RegisterAccessTypeRead;
 }
 
 AccessMask *DeadCodeEliminationPass::GetInstructionAccessMask(llvm::Instruction &inst) {
@@ -74,13 +74,19 @@ void DeadCodeEliminationPass::AnalyzeBasicBlock(llvm::BasicBlock &bb) {
 
   std::vector<llvm::Instruction *> work_list;
 
+  // sort of redundant to have reg -> [reg, mask, accessType] mapping
+  // but that's ok for now.
+  std::unordered_map<std::shared_ptr<Register>, std::vector<RegisterActivity>> reg_activity;
+
   for (auto iter = bb.rbegin(); iter != bb.rend(); iter++) {
+
+    auto &activity = inst_activity[&*iter];
+    reg_activity[activity.reg].push_back(activity);
+
     work_list.push_back(&*iter);
   }
 
   bool made_progress = false;
-
-  std::unordered_map<uint, std::vector<RegisterActivity>> reg_activity;
 
   do {
     std::vector<llvm::Instruction *> next_work_list;
@@ -112,4 +118,5 @@ void DeadCodeEliminationPass::AttemptDeadStoreRemoval(llvm::GetElementPtrInst *g
 
 }
 
-}
+} // namespace mcsema
+

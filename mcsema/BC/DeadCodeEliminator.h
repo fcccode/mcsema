@@ -1,5 +1,4 @@
 // DSE - Dead Store Elimination
-// Trying not to java this up
 
 #ifndef MCSEMA_BC_DSE_H_
 #define MCSEMA_BC_DSE_H_
