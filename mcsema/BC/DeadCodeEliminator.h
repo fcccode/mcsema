@@ -12,8 +12,22 @@
 #include "mcsema/BC/RegisterFile.h"
 
 namespace mcsema {
+ 
+typedef enum RegisterAccessType {
+  RegisterAccessTypeRead,
+  RegisterAccessTypeWrite,
+} RegisterAccess;
+
+using AccessMask = std::bitset<256>;
+
+struct RegisterActivity {
+  uint reg;
+  AccessMask *mask;
+  RegisterAccess accessType;
+};
 
 class DeadCodeEliminationPass : public llvm::ModulePass {
+
   RegisterFile *rMap;
   static char ID;
   const llvm::Module &mod;
@@ -22,7 +36,10 @@ class DeadCodeEliminationPass : public llvm::ModulePass {
   // use the gep to get def-use chain
   void AttemptDeadLoadRemoval(llvm::GetElementPtrInst *gep);
   void AttemptDeadStoreRemoval(llvm::GetElementPtrInst *gep);
-  bool OpRefersToStateStructure(llvm::Value *val);
+  bool InstructionTouchesStateStructure(llvm::Instruction &val);
+  RegisterAccess GetInstructionAccessType(llvm::Instruction &inst);
+  AccessMask *GetInstructionAccessMask(llvm::Instruction &inst);
+  uint GetAccessedRegisterIndex(llvm::Instruction &inst) {
 
   public:
   ~DeadCodeEliminationPass();

@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <list>
 #include <vector>
+#include <utility>
 
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/Function.h>
@@ -32,34 +33,63 @@ bool DeadCodeEliminationPass::runOnModule(llvm::Module &mod) {
   return false;
 }
 
-bool DeadCodeEliminationPass::OpRefersToStateStructure(llvm::Value *val) {
-  llvm::StructType *state = mod.getTypeByName("struct.State");
-  if (val->getType()->getTypeID() == state->getTypeID()) {
-    llvm::errs() << "found state\n";
-  }
-  else {
-    // walk def-use
-  }
+bool DeadCodeEliminationPass::InstructionTouchesStateStructure(llvm::Instruction &val) {
+  // remill::NthArgument
   return false;
+}
+
+uint DeadCodeEliminationPass::GetAccessedRegisterIndex(llvm::Instruction &inst) {
+  // should i abort() here if it appears to be accessing two different registers?
+  return 0;
+}
+
+RegisterAccess DeadCodeEliminationPass::GetInstructionAccessType(llvm::Instruction &inst) {
+  return RegisterAccessTypeRead;;
+}
+
+AccessMask *DeadCodeEliminationPass::GetInstructionAccessMask(llvm::Instruction &inst) {
+  return new AccessMask("0");
 }
 
 void DeadCodeEliminationPass::AnalyzeBasicBlock(llvm::BasicBlock &bb) {
   LOG(INFO) << "[Begin Dead Store Elim on BB]\n";
 
-  for (auto iter = bb.begin(); iter != bb.end(); iter++) {
-    llvm::Instruction *inst = &*iter;
-    
-    // get all operations that are pointers
-    // if they reference state structure
-    // let's determine the register
-    if (llvm::GetElementPtrInst *gep = llvm::dyn_cast<llvm::GetElementPtrInst>(inst)) {
-      auto operand = gep->getPointerOperand();
-      if (OpRefersToStateStructure(operand)) {
-        AttemptDeadLoadRemoval(gep);
-        AttemptDeadStoreRemoval(gep);
-      }
+  std::unordered_map<llvm::Instruction *, RegisterActivity> inst_activity;
+
+  for (auto &inst : bb) {
+    if (InstructionTouchesStateStructure(inst)) {
+      auto accessType = GetInstructionAccessType(inst);
+      auto activity = GetInstructionAccessMask(inst);
+      inst_activity[&inst].reg = 0;;
+      inst_activity[&inst].mask = activity;
+      inst_activity[&inst].accessType = accessType;
     }
   }
+
+  // Now we have map from instruction to its access to each register
+  // From here, we should create an ordered-array of <AccessType, AccessMask>
+  // and map it to each register
+  // then just attempt to flatten it, and look for conflicts
+
+  std::vector<llvm::Instruction *> work_list;
+
+  for (auto iter = bb.rbegin(); iter != bb.rend(); iter++) {
+    work_list.push_back(&*iter);
+  }
+
+  bool made_progress = false;
+
+  std::unordered_map<uint, std::vector<RegisterActivity>> reg_activity;
+
+  do {
+    std::vector<llvm::Instruction *> next_work_list;
+    for (auto inst : work_list) {
+      // TODO: properly use next_work_list
+      uint reg = GetAccessedRegisterIndex(inst);
+
+    }
+
+  } while (made_progress);
 
   LOG(INFO) << "[End Dead Store Elim on BB]\n";
 }
