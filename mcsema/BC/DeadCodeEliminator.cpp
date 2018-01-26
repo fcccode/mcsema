@@ -38,9 +38,9 @@ bool DeadCodeEliminationPass::InstructionTouchesStateStructure(llvm::Instruction
   return false;
 }
 
-uint DeadCodeEliminationPass::GetAccessedRegisterIndex(llvm::Instruction &inst) {
-  // should i abort() here if it appears to be accessing two different registers?
-  return 0;
+std::shared_ptr<Register> DeadCodeEliminationPass::GetAccessedRegister(llvm::Instruction &inst) {
+  // use access mask to determine this
+  return rMap->registerAtOffset(0, 0);
 }
 
 RegisterAccess DeadCodeEliminationPass::GetInstructionAccessType(llvm::Instruction &inst) {
@@ -60,7 +60,8 @@ void DeadCodeEliminationPass::AnalyzeBasicBlock(llvm::BasicBlock &bb) {
     if (InstructionTouchesStateStructure(inst)) {
       auto accessType = GetInstructionAccessType(inst);
       auto activity = GetInstructionAccessMask(inst);
-      inst_activity[&inst].reg = 0;;
+      auto reg = GetAccessedRegister(inst);
+      inst_activity[&inst].reg = reg;;
       inst_activity[&inst].mask = activity;
       inst_activity[&inst].accessType = accessType;
     }
@@ -85,7 +86,6 @@ void DeadCodeEliminationPass::AnalyzeBasicBlock(llvm::BasicBlock &bb) {
     std::vector<llvm::Instruction *> next_work_list;
     for (auto inst : work_list) {
       // TODO: properly use next_work_list
-      uint reg = GetAccessedRegisterIndex(inst);
 
     }
 

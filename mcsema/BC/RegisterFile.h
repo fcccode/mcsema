@@ -23,13 +23,6 @@ struct Register {
 // we'll have to make some changes
 class RegisterFile {
 
-  struct RegisterGroup {
-    std::string name;
-    std::vector<Register *> members;
-    RegisterGroup(std::string name_) : name(name_) {}
-    void addRegister(Register *r) { members.push_back(r); }
-  };
-
   std::vector<std::shared_ptr<Register>> idx_to_reg;
   const llvm::DataLayout &_layout;
 

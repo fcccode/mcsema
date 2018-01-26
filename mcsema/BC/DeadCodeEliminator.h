@@ -21,7 +21,7 @@ typedef enum RegisterAccessType {
 using AccessMask = std::bitset<256>;
 
 struct RegisterActivity {
-  uint reg;
+  std::shared_ptr<Register> reg;
   AccessMask *mask;
   RegisterAccess accessType;
 };
@@ -39,7 +39,7 @@ class DeadCodeEliminationPass : public llvm::ModulePass {
   bool InstructionTouchesStateStructure(llvm::Instruction &val);
   RegisterAccess GetInstructionAccessType(llvm::Instruction &inst);
   AccessMask *GetInstructionAccessMask(llvm::Instruction &inst);
-  uint GetAccessedRegisterIndex(llvm::Instruction &inst) {
+  std::shared_ptr<Register> GetAccessedRegister(llvm::Instruction &inst);
 
   public:
   ~DeadCodeEliminationPass();
