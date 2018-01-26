@@ -86,6 +86,11 @@ void DeadCodeEliminationPass::AnalyzeBasicBlock(llvm::BasicBlock &bb) {
     work_list.push_back(&*iter);
   }
 
+  // with this approach, I've essentially created a dynamic programming problem
+  // where we may have to search far in the future for an access
+  // There may be a better data structure to make this not at-worst n^2
+  // For example, something that can give me next-read or next-write
+
   bool made_progress = false;
 
   do {
