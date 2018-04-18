@@ -388,8 +388,9 @@ static void CreateLandingPad(TranslationContext &ctx,
     auto catch_all = false;
     unsigned long catch_all_index = 0;
 
-    for (auto index = eh_entry->type_var.size(); index > 0; index--) {
-      auto type = eh_entry->type_var[index];
+    for (auto it = eh_entry->type_var.begin(); it != eh_entry->type_var.end(); it++) {
+      auto index = it->first;
+      auto type = it->second; //eh_entry->type_var[index];
       if (type->ea) {
         lpad->addClause(gModule->getGlobalVariable(type->name));
         auto value = llvm::ConstantInt::get(dword_type, index);
